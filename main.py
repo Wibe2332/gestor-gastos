@@ -3,6 +3,7 @@ from database import (
     guardar_gasto, listar_gastos, editar_gasto, eliminar_gasto,
     guardar_categoria, listar_categorias
 )
+from api import obtener_tasa_cambio
 
 
 def mostrar_menu():
@@ -11,7 +12,8 @@ def mostrar_menu():
     print("2. Ver gastos")
     print("3. Editar gasto")
     print("4. Eliminar gasto")
-    print("5. Salir")
+    print("5. Ver gastos en USD")
+    print("6. Salir")
 
 
 def elegir_categoria():
@@ -42,7 +44,7 @@ while True:
         monto = float(input("Monto: "))
         categoria_id = elegir_categoria()
 
-        cat = Categoria("")  # solo para crear el objeto Gasto, el nombre real no importa aquí
+        cat = Categoria("")
         g = Gasto(descripcion, monto, cat)
         guardar_gasto(g, categoria_id)
 
@@ -65,6 +67,14 @@ while True:
         eliminar_gasto(id_gasto)
 
     elif opcion == "5":
+        tasa = obtener_tasa_cambio("USD")
+        gastos = listar_gastos()
+        for fila in gastos:
+            id_gasto, descripcion, monto, fecha, nombre_categoria = fila
+            monto_usd = float(monto) * tasa
+            print(f"[ID {id_gasto}] {descripcion} | ${monto} DOP = ${monto_usd:.2f} USD")
+
+    elif opcion == "6":
         print("¡Hasta luego!")
         break
 
