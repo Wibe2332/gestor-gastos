@@ -60,7 +60,28 @@ def eliminar_gasto(id_gasto):
     conexion.close()
     print("✅ Gasto eliminado")
 
+def guardar_categoria(nombre):
+    conexion = conectar()
+    cursor = conexion.cursor()
 
+    cursor.execute(
+        "INSERT INTO Categorias (nombre) VALUES (?)",
+        nombre
+    )
+
+    conexion.commit()
+    conexion.close()
+    print("✅ Categoría guardada")
+
+
+def listar_categorias():
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT id, nombre FROM Categorias")
+    filas = cursor.fetchall()
+    conexion.close()
+    return filas
 
 if __name__ == "__main__":
     try:

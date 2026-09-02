@@ -1,5 +1,9 @@
 from modelos import Categoria, Gasto
-from database import guardar_gasto, listar_gastos, editar_gasto, eliminar_gasto
+from database import (
+    guardar_gasto, listar_gastos, editar_gasto, eliminar_gasto,
+    guardar_categoria, listar_categorias
+)
+
 
 def mostrar_menu():
     print("\n--- GESTOR DE GASTOS ---")
@@ -9,6 +13,26 @@ def mostrar_menu():
     print("4. Eliminar gasto")
     print("5. Salir")
 
+
+def elegir_categoria():
+    categorias = listar_categorias()
+
+    print("\n--- Categorías ---")
+    for cat_id, nombre in categorias:
+        print(f"{cat_id}. {nombre}")
+    print("0. Crear categoría nueva")
+
+    opcion = input("Elige una categoría (número): ")
+
+    if opcion == "0":
+        nombre_nuevo = input("Nombre de la nueva categoría: ")
+        guardar_categoria(nombre_nuevo)
+        categorias = listar_categorias()
+        return categorias[-1][0]
+    else:
+        return int(opcion)
+
+
 while True:
     mostrar_menu()
     opcion = input("Elige una opción: ")
@@ -16,10 +40,11 @@ while True:
     if opcion == "1":
         descripcion = input("Descripción: ")
         monto = float(input("Monto: "))
+        categoria_id = elegir_categoria()
 
-        cat = Categoria("Entretenimiento")
+        cat = Categoria("")  # solo para crear el objeto Gasto, el nombre real no importa aquí
         g = Gasto(descripcion, monto, cat)
-        guardar_gasto(g, 1)
+        guardar_gasto(g, categoria_id)
 
     elif opcion == "2":
         gastos = listar_gastos()
