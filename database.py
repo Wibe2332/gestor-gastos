@@ -83,6 +83,21 @@ def listar_categorias():
     conexion.close()
     return filas
 
+def total_por_categoria():          # ← AGREGAR AQUÍ, al final
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        SELECT c.nombre, SUM(g.monto) AS total
+        FROM Gastos g
+        JOIN Categorias c ON g.categoria_id = c.id
+        GROUP BY c.nombre
+    """)
+
+    filas = cursor.fetchall()
+    conexion.close()
+    return filas
+
 if __name__ == "__main__":
     try:
         conn = conectar()
@@ -91,3 +106,4 @@ if __name__ == "__main__":
     except Exception as e:
         print("❌ Error al conectar:", e)
         
+

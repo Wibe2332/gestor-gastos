@@ -1,7 +1,7 @@
 from modelos import Categoria, Gasto
 from database import (
     guardar_gasto, listar_gastos, editar_gasto, eliminar_gasto,
-    guardar_categoria, listar_categorias
+    guardar_categoria, listar_categorias, total_por_categoria
 )
 from api import obtener_tasa_cambio
 
@@ -13,7 +13,8 @@ def mostrar_menu():
     print("3. Editar gasto")
     print("4. Eliminar gasto")
     print("5. Ver gastos en USD")
-    print("6. Salir")
+    print("6. Ver reporte por categoría")
+    print("7. Salir")
 
 
 def elegir_categoria():
@@ -83,6 +84,17 @@ while True:
             print(f"[ID {id_gasto}] {descripcion} | ${monto} DOP = ${monto_usd:.2f} USD")
 
     elif opcion == "6":
+        totales = total_por_categoria()
+        total_general = 0
+
+        print("\n--- REPORTE POR CATEGORÍA ---")
+        for nombre_categoria, total in totales:
+            print(f"{nombre_categoria}: ${total:.2f}")
+            total_general += float(total)
+
+        print(f"\nTOTAL GENERAL: ${total_general:.2f}")
+
+    elif opcion == "7":
         print("¡Hasta luego!")
         break
 
