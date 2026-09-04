@@ -34,6 +34,14 @@ def elegir_categoria():
     else:
         return int(opcion)
 
+def pedir_numero(mensaje, tipo=float):
+    while True:
+        entrada = input(mensaje)
+        try:
+            return tipo(entrada)
+        except ValueError:
+            print("❌ Eso no es un número válido, intenta de nuevo.")
+
 
 while True:
     mostrar_menu()
@@ -41,7 +49,7 @@ while True:
 
     if opcion == "1":
         descripcion = input("Descripción: ")
-        monto = float(input("Monto: "))
+        monto = pedir_numero("Monto: ", float)
         categoria_id = elegir_categoria()
 
         cat = Categoria("")
@@ -57,13 +65,13 @@ while True:
             print(f"[ID {id_gasto}] {g}")
 
     elif opcion == "3":
-        id_gasto = int(input("ID del gasto a editar: "))
+        id_gasto = pedir_numero("ID del gasto a editar: ", int)
         nueva_descripcion = input("Nueva descripción: ")
-        nuevo_monto = float(input("Nuevo monto: "))
+        nuevo_monto = pedir_numero("Nuevo monto: ", float)
         editar_gasto(id_gasto, nueva_descripcion, nuevo_monto)
 
     elif opcion == "4":
-        id_gasto = int(input("ID del gasto a eliminar: "))
+        id_gasto = pedir_numero("ID del gasto a eliminar: ", int)
         eliminar_gasto(id_gasto)
 
     elif opcion == "5":
