@@ -25,15 +25,28 @@ def elegir_categoria():
         print(f"{cat_id}. {nombre}")
     print("0. Crear categoría nueva")
 
-    opcion = input("Elige una categoría (número): ")
+    ids_validos = [cat_id for cat_id, nombre in categorias]
 
-    if opcion == "0":
-        nombre_nuevo = input("Nombre de la nueva categoría: ")
-        guardar_categoria(nombre_nuevo)
-        categorias = listar_categorias()
-        return categorias[-1][0]
-    else:
-        return int(opcion)
+    while True:
+        opcion = input("Elige una categoría (número): ")
+
+        if opcion == "0":
+            nombre_nuevo = input("Nombre de la nueva categoría: ")
+            guardar_categoria(nombre_nuevo)
+            categorias = listar_categorias()
+            return categorias[-1][0]
+
+        try:
+            opcion_numero = int(opcion)
+        except ValueError:
+            print("❌ Eso no es un número válido, intenta de nuevo.")
+            continue
+
+        if opcion_numero in ids_validos:
+            return opcion_numero
+        else:
+            print("❌ Ese ID de categoría no existe, intenta de nuevo.")
+            
 
 def pedir_numero(mensaje, tipo=float):
     while True:
