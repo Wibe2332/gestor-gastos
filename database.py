@@ -1,4 +1,8 @@
+
 import pyodbc
+from rich.console import Console
+
+console = Console()
 
 def conectar():
     conexion = pyodbc.connect(
@@ -20,7 +24,7 @@ def guardar_gasto(gasto, categoria_id):
 
     conexion.commit()
     conexion.close()
-    print("✅ Gasto guardado en la base de datos")
+    console.print("[green]✅ Gasto guardado en la base de datos[/green]")
 
 def listar_gastos():
     conexion = conectar()
@@ -47,7 +51,7 @@ def editar_gasto(id_gasto, nueva_descripcion, nuevo_monto):
 
     conexion.commit()
     conexion.close()
-    print("✅ Gasto actualizado")
+    console.print("[green]✅ Gasto actualizado[/green]")
 
 
 def eliminar_gasto(id_gasto):
@@ -58,7 +62,7 @@ def eliminar_gasto(id_gasto):
 
     conexion.commit()
     conexion.close()
-    print("✅ Gasto eliminado")
+    console.print("[green]✅ Gasto eliminado[/green]")
 
 def guardar_categoria(nombre):
     conexion = conectar()
@@ -71,7 +75,7 @@ def guardar_categoria(nombre):
 
     conexion.commit()
     conexion.close()
-    print("✅ Categoría guardada")
+    console.print("[green]✅ Categoría guardada[/green]")
 
 
 def listar_categorias():
@@ -101,9 +105,9 @@ def total_por_categoria():          # ← AGREGAR AQUÍ, al final
 if __name__ == "__main__":
     try:
         conn = conectar()
-        print("✅ Conexión exitosa a SQL Server")
+        console.print("[green]✅ Conexión exitosa a SQL Server[/green]")
         conn.close()
     except Exception as e:
-        print("❌ Error al conectar:", e)
+        console.print(f"[red]❌ Error al conectar: {e}[/red]")
         
 

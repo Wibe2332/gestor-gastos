@@ -1,3 +1,7 @@
+from rich.console import Console
+from rich.table import Table
+console = Console()
+
 from modelos import Categoria, Gasto
 from database import (
     guardar_gasto, listar_gastos, editar_gasto, eliminar_gasto,
@@ -7,15 +11,14 @@ from api import obtener_tasa_cambio
 
 
 def mostrar_menu():
-    print("\n--- GESTOR DE GASTOS ---")
-    print("1. Agregar gasto")
-    print("2. Ver gastos")
-    print("3. Editar gasto")
-    print("4. Eliminar gasto")
-    print("5. Ver gastos en USD")
-    print("6. Ver reporte por categoría")
-    print("7. Salir")
-
+    console.print("\n[bold cyan]--- GESTOR DE GASTOS ---[/bold cyan]")
+    console.print("[1] Agregar gasto")
+    console.print("[2] Ver gastos")
+    console.print("[3] Editar gasto")
+    console.print("[4] Eliminar gasto")
+    console.print("[5] Ver gastos en USD")
+    console.print("[6] Ver reporte por categoría")
+    console.print("[7] Salir")
 
 def elegir_categoria():
     categorias = listar_categorias()
@@ -39,13 +42,13 @@ def elegir_categoria():
         try:
             opcion_numero = int(opcion)
         except ValueError:
-            print("❌ Eso no es un número válido, intenta de nuevo.")
+            console.print("[red]❌ Eso no es un número válido, intenta de nuevo.[/red]")
             continue
 
         if opcion_numero in ids_validos:
             return opcion_numero
         else:
-            print("❌ Ese ID de categoría no existe, intenta de nuevo.")
+            console.print("[red]❌ Ese ID de categoría no existe, intenta de nuevo.[/red]")
             
 
 def pedir_numero(mensaje, tipo=float):
@@ -54,7 +57,7 @@ def pedir_numero(mensaje, tipo=float):
         try:
             return tipo(entrada)
         except ValueError:
-            print("❌ Eso no es un número válido, intenta de nuevo.")
+            console.print("[red]❌ Eso no es un número válido, intenta de nuevo.[/red]")
 
 
 while True:
@@ -72,11 +75,19 @@ while True:
 
     elif opcion == "2":
         gastos = listar_gastos()
+
+        tabla = Table(title="Gastos Registrados")
+        tabla.add_column("ID", style="cyan")
+        tabla.add_column("Descripción", style="white")
+        tabla.add_column("Monto", style="green")
+        tabla.add_column("Fecha", style="yellow")
+        tabla.add_column("Categoría", style="magenta")
+
         for fila in gastos:
             id_gasto, descripcion, monto, fecha, nombre_categoria = fila
-            cat = Categoria(nombre_categoria)
-            g = Gasto(descripcion, monto, cat, fecha)
-            print(f"[ID {id_gasto}] {g}")
+            tabla.add_row(str(id_gasto), descripcion, f"${monto:.2f}", str(fecha), nombre_categoria)
+
+        console.print(tabla)
 
     elif opcion == "3":
         id_gasto = pedir_numero("ID del gasto a editar: ", int)
@@ -87,6 +98,7 @@ while True:
     elif opcion == "4":
         id_gasto = pedir_numero("ID del gasto a eliminar: ", int)
         eliminar_gasto(id_gasto)
+
 
     elif opcion == "5":
         tasa = obtener_tasa_cambio("USD")
@@ -100,12 +112,16 @@ while True:
         totales = total_por_categoria()
         total_general = 0
 
-        print("\n--- REPORTE POR CATEGORÍA ---")
+        tabla = Table(title="Reporte por Categoría")
+        tabla.add_column("Categoría", style="magenta")
+        tabla.add_column("Total", style="green")
+
         for nombre_categoria, total in totales:
-            print(f"{nombre_categoria}: ${total:.2f}")
+            tabla.add_row(nombre_categoria, f"${total:.2f}")
             total_general += float(total)
 
-        print(f"\nTOTAL GENERAL: ${total_general:.2f}")
+        console.print(tabla)
+        console.print(f"\n[bold yellow]TOTAL GENERAL: ${total_general:.2f}[/bold yellow]")
 
     elif opcion == "7":
         print("¡Hasta luego!")
